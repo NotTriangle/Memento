@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Memento</string>
+
+    <string name="facebook_app_id">687671721986640</string>
+    <string name="fb_login_protocol_scheme">fb687671721986640</string>
+
 </resources>

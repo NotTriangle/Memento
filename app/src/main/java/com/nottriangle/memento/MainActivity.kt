@@ -1,34 +1,52 @@
 package com.nottriangle.memento
 
-import android.os.AsyncTask
+import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.google.api.gax.core.FixedCredentialsProvider
-import com.google.auth.Credentials
-import com.google.auth.oauth2.UserCredentials
-import com.google.photos.library.v1.PhotosLibraryClient
-import com.google.photos.library.v1.PhotosLibrarySettings
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
+import kotlinx.android.synthetic.main.activity_main.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
 
 class MainActivity : AppCompatActivity() {
+
+    val callbackManager = CallbackManager.Factory.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val credentials: Credentials = UserCredentials.newBuilder()
-            .setClientId("465911247389")
-            .setClientSecret("1venjjm75asi4kdh57bqdmiockpf2ofl")
-            .setRefreshToken("apps.googleusercontent.com")
-            .build()
-        val settings = PhotosLibrarySettings.newBuilder()
-            .setCredentialsProvider(
-                FixedCredentialsProvider.create(credentials)
-            )
-            .build()
-        val client = PhotosLibraryClient.initialize(settings)
+        loginButton.setPermissions(listOf("public_profile", "user_photos"))
+        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+            override fun onSuccess(loginResult: LoginResult?) {
+                // App code
+                Log.e("XXX", "ONLOGIN SUCCESS")
+            }
 
-        val a = client.listAlbums()
-        Log.e("XXX", "a " + a)
+            override fun onCancel() {
+                // App code
+                Log.e("XXX", "onCancel")
+            }
+
+            override fun onError(exception: FacebookException) {
+                // App code
+                Log.e("XXX", "exce[ti " + exception)
+            }
+        })
+
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
